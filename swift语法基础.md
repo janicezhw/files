@@ -189,6 +189,50 @@ let http404Error = (404, "Not Found")
 // http404Error is of type (Int, String), and equals (404, "Not Found")
 ```
 
+你也可以将一个元组的内容分解成单独的常量或变量，这样你就可以正常的使用它们了：
+
+```swift
+let (statusCode, statusMessage) = http404Error
+print("The status code is \(statusCode)")
+// prints "The status code is 404"
+print("The status message is \(statusMessage)")
+// prints "The status message is Not Found"
+```
+
+当你分解元组的时候，如果只需要使用其中的一部分数据，不需要的数据可以用下滑线（ _ ）代替：
+
+```swift
+let (justTheStatusCode, _) = http404Error
+print("The status code is \(justTheStatusCode)")
+// prints "The status code is 404"
+```
+
+另外一种方法就是利用从零开始的索引数字访问元组中的单独元素：
+
+```swift
+print("The status code is \(http404Error.0)")
+// prints "The status code is 404"
+print("The status message is \(http404Error.1)")
+// prints "The status message is Not Found"
+```
+
+你可以在定义元组的时候给其中的单个元素命名：
+
+```swift
+let http200Status = (statusCode: 200, description: "OK")
+// 在命名之后，你就可以通过访问名字来获取元素的值了：
+print("The status code is \(http200Status.statusCode)")
+// prints "The status code is 200"
+print("The status message is \(http200Status.description)")
+// prints "The status message is OK"
+```
+
+> 注意
+>
+> 元组在临时的值组合中很有用，但是它们不适合创建复杂的数据结构。如果你的数据结构超出了临时使用的范围，那么请建立一个类或结构体来代替元组。更多信息请参考[类和结构体](https://www.cnswift.org/classes-and-structures/)。
+
+
+
 ## 数组及字典
 
 ```swift
@@ -312,6 +356,45 @@ let nickName: String? = nil
 let fullName: String = "John Appleseed"
 let informalGreeting = "Hi \(nickName ?? fullName)"
 ```
+
+## 错误处理
+
+```swift
+func makeASandwich() throws {
+    // ...
+}
+ 
+do {
+    try makeASandwich()
+    eatASandwich()
+} catch Error.OutOfCleanDishes {
+    washDishes()
+} catch Error.MissingIngredients(let ingredients) {
+    buyGroceries(ingredients)
+}
+```
+
+## 断言
+
+```swift
+let age = -3
+assert(age >= 0, "A person's age cannot be less than zero")
+// this causes the assertion to trigger, because age is not >= 0
+```
+
+### 什么时候使用断言
+
+调试阶段发现必须条件不满足的问题。
+
+在任何判断条件可能为假但是一定要*绝对地*为真才能让代码继续执行的时候才使用断言。使用断言的恰当情况包括：
+
+- 一个整数下标脚本被传入了一个自定义的下标脚本实现，但是下标脚本列表值可能过高或者过低。
+- 给函数传入了一个值，但是一个不合法的值将意味着函数不能完成它的任务。
+- 一个可选值当前为 nil ，但随后的代码就需要非空的值才能成功执行。
+
+> 注意
+>
+> 断言会导致你的应用终止而且不能代替小概率非法情况的处理设计。然而，非法条件是可能会出现的，断言是保证这些情况在你的应用发布之前的开发过程中能够被注意到的有效手段。
 
 ## 函数和闭包
 
